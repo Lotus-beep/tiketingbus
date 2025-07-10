@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "http://www.tiketingaja.my.id/api/";
+const BASE_URL = "https://www.tiketingaja.my.id/api/";
 const LOGIN_URL = `${BASE_URL}token/`;
 const GET_NOTES = `${BASE_URL}notes/`;
 const GETDATA_URL = `${BASE_URL}getdata/`

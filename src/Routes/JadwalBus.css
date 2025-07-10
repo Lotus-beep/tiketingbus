@@ -1,0 +1,58 @@
+.jadwal-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.jadwal-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.jadwal-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.bus-name {
+  font-size: 18px;
+  color: #2a60c3;
+  margin-bottom: 8px;
+}
+
+.info {
+  margin: 2px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.card-right {
+  display: flex;
+  align-items: center;
+}
+
+.btn-pesan {
+  padding: 8px 14px;
+  background-color: #2a60c3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-pesan:hover {
+  background-color: #1c4fa1;
+}

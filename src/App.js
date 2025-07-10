@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import Login from "./Routes/Login";
+import Menu from "./Routes/Menu";
+import SeatSelector from "./Routes/SeatSelector";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+import Pembayaran from "./Components/Pembayaran";
+import CreateTiket from "./Routes/Createtiket";
+import Jadwal from "./Routes/Jadwal";
+import Profil from "./Routes/Profil";
+import Register from "./Routes/Register";
+import MainMenu from "./Routes/Menu";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="Register/" element={<Register />} />
+          <Route path="menu/" element={<MainMenu />} />
+          <Route path="menu/SeatSelector/:id/:type" element={<SeatSelector />} />
+          <Route path="tiket/Payment/:id/:type/:Total" element={<Pembayaran />} />
+          <Route path="CreateTiket/" element={<CreateTiket />} />
+          <Route path="Jadwal/" element={<Jadwal />} />
+          <Route path="Profil/" element={<Profil />} />
+        </Routes>
+      </Router>
+    </ChakraProvider>
   );
 }
 

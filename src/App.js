@@ -2,7 +2,7 @@ import Login from "./Routes/Login";
 import Menu from "./Routes/Menu";
 import SeatSelector from "./Routes/SeatSelector";
 import "./App.css";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import Pembayaran from "./Components/Pembayaran";
 import CreateTiket from "./Routes/Createtiket";

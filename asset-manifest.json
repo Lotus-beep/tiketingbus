@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/tiketingbus/static/css/main.60991b91.css",
+    "main.js": "/tiketingbus/static/js/main.db91270c.js",
+    "static/js/453.8ab44547.chunk.js": "/tiketingbus/static/js/453.8ab44547.chunk.js",
+    "index.html": "/tiketingbus/index.html",
+    "main.60991b91.css.map": "/tiketingbus/static/css/main.60991b91.css.map",
+    "main.db91270c.js.map": "/tiketingbus/static/js/main.db91270c.js.map",
+    "453.8ab44547.chunk.js.map": "/tiketingbus/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.60991b91.css",
+    "static/js/main.db91270c.js"
+  ]
+}

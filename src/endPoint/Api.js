@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://www.tiketingaja.my.id/api/";
+const BASE_URL = "http://127.0.0.1:8000/api/";
 const LOGIN_URL = `${BASE_URL}token/`;
 const GET_NOTES = `${BASE_URL}notes/`;
 const GETDATA_URL = `${BASE_URL}getdata/`
@@ -10,7 +10,7 @@ const GET_TIKET = `${BASE_URL}createTiket/`
 const LOGOUT_URL = `${BASE_URL}logout/`;
 const BOOKING_URL = `${BASE_URL}addBangku/`;
 const ADD_ORDER = `${BASE_URL}addPesanan/`;
-const REGISTER_URL = `${BASE_URL}Register/`
+const REGISTER_URL = `${BASE_URL}Register/`;
 
 export const login = async (username, password) => {
   try {

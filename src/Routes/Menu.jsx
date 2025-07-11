@@ -55,6 +55,7 @@ const MainMenu = () => {
       const res = await get_data();
       setData(res);
       setNote(response);
+      console.log(data)
     } catch (error) {
       console.log(error);
       navigate("/", { replace: true });

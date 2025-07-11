@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://127.0.0.1:8000/api/";
+const BASE_URL = "https://www.tiketingaja.my.id/api/";
 const LOGIN_URL = `${BASE_URL}token/`;
 const GET_NOTES = `${BASE_URL}notes/`;
 const GETDATA_URL = `${BASE_URL}getdata/`

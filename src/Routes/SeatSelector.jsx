@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Booking, GetbyId, get_notes } from "../endPoint/Api"; // Pastikan path ini benar
+import { Booking, GetbyId } from "../endPoint/Api";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Box,
-  Grid,
   Button,
   Heading,
   VStack,
@@ -11,13 +10,12 @@ import {
   HStack,
   Spinner,
   useToast,
-  SimpleGrid,
   Divider,
   Icon,
+  Badge,
 } from "@chakra-ui/react";
 import { MdChair } from "react-icons/md";
 
-// Komponen kecil untuk menampilkan legenda
 const Legend = () => (
   <HStack spacing={6} justify="center" p={4} bg="gray.50" borderRadius="md" w="100%">
     <HStack>
@@ -26,17 +24,19 @@ const Legend = () => (
     </HStack>
     <HStack>
       <Box w={4} h={4} bg="red.400" borderRadius="sm" />
-      <Text fontSize="sm">Terisi</Text>
+      <Text fontSize="sm">Terisi (Nonaktif)</Text>
     </HStack>
     <HStack>
       <Box w={4} h={4} bg="teal.400" borderRadius="sm" />
+      <Text fontSize="sm">Terisi (Aktif)</Text>
+    </HStack>
+    <HStack>
+      <Box w={4} h={4} bg="teal.200" borderRadius="sm" />
       <Text fontSize="sm">Pilihan Anda</Text>
     </HStack>
   </HStack>
 );
 
-// Layout Bus - Konfigurasi ini membuat komponen lebih fleksibel
-// `null` merepresentasikan lorong
 const busLayout = [
   [1, 2, null, 3, 4],
   [5, 6, null, 7, 8],
@@ -55,20 +55,25 @@ const SeatSelector = () => {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const [bookedSeats, setBookedSeats] = useState(new Set());
+  const [bookedSeats, setBookedSeats] = useState({}); // { no_bangku: status }
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Tentukan harga berdasarkan tipe bus
+  const pricePerSeat = type === "Executive" ? 500000 : 100000;
+  const totalPrice = selectedSeats.length * pricePerSeat;
 
   useEffect(() => {
     const fetchSeatData = async () => {
       try {
         const bookedSeatsData = await GetbyId(id);
         if (Array.isArray(bookedSeatsData)) {
-          const filledSeats = bookedSeatsData
-            .filter(seat => seat.status === true)
-            .map(seat => seat.no_bangku);
-          setBookedSeats(new Set(filledSeats));
+          const seatsMap = {};
+          bookedSeatsData.forEach((seat) => {
+            seatsMap[seat.no_bangku] = seat.status;
+          });
+          setBookedSeats(seatsMap);
         }
       } catch (error) {
         console.error("Failed to fetch seat data:", error);
@@ -88,7 +93,7 @@ const SeatSelector = () => {
   }, [id, navigate, toast]);
 
   const handleSeatClick = (seatNumber) => {
-    if (bookedSeats.has(seatNumber)) return;
+    if (bookedSeats.hasOwnProperty(seatNumber)) return;
     setSelectedSeats((prev) =>
       prev.includes(seatNumber)
         ? prev.filter((s) => s !== seatNumber)
@@ -98,7 +103,9 @@ const SeatSelector = () => {
 
   const getSeatStatus = (seatNumber) => {
     if (selectedSeats.includes(seatNumber)) return "selected";
-    if (bookedSeats.has(seatNumber)) return "booked";
+    if (bookedSeats.hasOwnProperty(seatNumber)) {
+      return bookedSeats[seatNumber] ? "booked-active" : "booked-inactive";
+    }
     return "available";
   };
 
@@ -146,30 +153,38 @@ const SeatSelector = () => {
     );
   }
 
-  const pricePerSeat = 50000;
-  const totalPrice = selectedSeats.length * pricePerSeat;
-
   return (
     <Box maxW="container.lg" mx="auto" p={6}>
       <VStack spacing={6}>
         <Heading as="h1" size="lg">
           Pilih Kursi Anda
         </Heading>
+        
+        {/* Tambahkan badge untuk menampilkan tipe bus dan harga per bangku */}
+        <Badge 
+          colorScheme={type === "Executive" ? "purple" : "green"} 
+          fontSize="lg" 
+          p={2} 
+          borderRadius="md"
+        >
+          {type === "Executive" ? "Executive" : "Regular"} - 
+          Harga per bangku: {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(pricePerSeat)}
+        </Badge>
+
         <Legend />
 
-        {/* ======================= AREA PERUBAHAN ======================= */}
         <Box p={{ base: 3, md: 6 }} borderWidth={1} borderRadius="lg" w="fit-content" mx="auto">
           <HStack justifyContent="flex-end" w="100%" pr={4} mb={4}>
-             <Text color="gray.500" fontWeight="bold">DEPAN</Text>
+            <Text color="gray.500" fontWeight="bold">DEPAN</Text>
           </HStack>
-          {/* DIUBAH: spacing pada VStack diperbesar */}
           <VStack spacing={{ base: 3, md: 4 }}>
             {busLayout.map((row, rowIndex) => (
-              // DIUBAH: spacing pada HStack diperbesar
               <HStack key={rowIndex} spacing={{ base: 3, md: 4 }}>
                 {row.map((seatNumber, seatIndex) => {
                   if (seatNumber === null) {
-                    // DIUBAH: lebar lorong diperbesar
                     return <Box key={`aisle-${rowIndex}-${seatIndex}`} w={{ base: "1.5rem", md: "3rem" }} />;
                   }
                   const status = getSeatStatus(seatNumber);
@@ -177,18 +192,19 @@ const SeatSelector = () => {
                     <Button
                       key={seatNumber}
                       onClick={() => handleSeatClick(seatNumber)}
-                      isDisabled={status === "booked"}
-                      // DIUBAH: Ukuran tombol diperbesar dan dibuat responsif
+                      isDisabled={status !== "available"}
                       w={{ base: "3rem", md: "3.75rem" }}
                       h={{ base: "3rem", md: "3.75rem" }}
-                      colorScheme={status === "selected" ? "teal" : status === "booked" ? "red" : "gray"}
+                      colorScheme={
+                        status === "selected" ? "teal" :
+                        status === "booked-active" ? "teal" :
+                        status === "booked-inactive" ? "red" : "gray"
+                      }
                       variant={status === "available" ? "outline" : "solid"}
                     >
                       <VStack spacing={0}>
-                         {/* DIUBAH: Ukuran ikon diperbesar */}
-                         <Icon as={MdChair} boxSize={{ base: 5, md: 6 }}/>
-                         {/* DIUBAH: Ukuran font diperbesar */}
-                         <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">{seatNumber}</Text>
+                        <Icon as={MdChair} boxSize={{ base: 5, md: 6 }}/>
+                        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">{seatNumber}</Text>
                       </VStack>
                     </Button>
                   );
@@ -197,27 +213,33 @@ const SeatSelector = () => {
             ))}
           </VStack>
         </Box>
-        {/* ======================= AKHIR AREA PERUBAHAN ======================= */}
-        
-        <VStack
-          spacing={4}
-          w="100%"
-          maxW="md"
-          p={5}
-          borderWidth={1}
-          borderRadius="lg"
-          align="stretch"
-        >
+
+        <VStack spacing={4} w="100%" maxW="md" p={5} borderWidth={1} borderRadius="lg" align="stretch">
           <Heading as="h3" size="md">
             Ringkasan Pesanan
           </Heading>
           <Divider />
+          <HStack justify="space-between">
+            <Text fontWeight="medium">Tipe Bus:</Text>
+            <Text fontWeight="bold" color={type === "Executive" ? "purple.500" : "green.500"}>
+              {type === "Executive" ? "Executive" : "Regular"}
+            </Text>
+          </HStack>
           <HStack justify="space-between">
             <Text fontWeight="medium">Kursi Dipilih:</Text>
             <Text fontWeight="bold" color="teal.600" maxWidth="70%" noOfLines={2}>
               {selectedSeats.length > 0
                 ? selectedSeats.sort((a, b) => a - b).join(", ")
                 : "Belum ada kursi dipilih"}
+            </Text>
+          </HStack>
+          <HStack justify="space-between">
+            <Text fontWeight="medium">Harga per Bangku:</Text>
+            <Text fontWeight="bold">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+              }).format(pricePerSeat)}
             </Text>
           </HStack>
           <HStack justify="space-between">

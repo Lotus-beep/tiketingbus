@@ -223,18 +223,18 @@ const MainMenu = () => {
               <CardBody>
                 <Stack spacing={3}>
                   <Flex justify="space-between" align="center">
-                    <Heading size="md">{bus.name || "Bus Premium"}</Heading>
+                    <Heading size="md">{bus.type === "Executiv" ? "Bus Executive" : "Bus Reguler"}</Heading>
                     <Badge colorScheme="green" px={2}>
-                      {bus.seats || "12"} Kursi Tersedia
+                      {bus.jumlah_bangku || "12"} Kursi Tersedia
                     </Badge>
                   </Flex>
-                  <Text color={colors.subtleText}>{bus.route || "Jakarta - Bandung"}</Text>
+                  <Text color={colors.subtleText}>{bus.jurusan || "Jakarta - Bandung"}</Text>
                   <Flex align="center" color={colors.subtleText}>
                     <FiClock style={{ marginRight: "8px" }} />
-                    <Text>{bus.time || "08:00 - 12:00"}</Text>
+                    <Text>{bus.waktu_berangkat || "08:00 - 12:00"}</Text>
                   </Flex>
                   <Text fontSize="xl" fontWeight="bold" color={colors.brand}>
-                    {bus.price || "Rp 150.000"}
+                    {bus.type == "Executiv" ? "Rp 500.000" : "Rp 100.000"}
                   </Text>
                 </Stack>
               </CardBody>
